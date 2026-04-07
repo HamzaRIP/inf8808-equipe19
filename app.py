@@ -75,7 +75,7 @@ app.layout = html.Div(className='dashboard', children=[
                     value=[MIN_YEAR, MAX_YEAR],
                     marks={y: str(y) for y in range(MIN_YEAR, MAX_YEAR + 1, 10)},
                     tooltip={'placement': 'bottom', 'always_visible': False},
-                    debounce=True,
+                    updatemode='mouseup',
                     className='year-slider',
                 ),
             ]),
