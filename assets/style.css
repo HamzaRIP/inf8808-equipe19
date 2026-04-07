@@ -2,16 +2,39 @@
 
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
+/* ── Dark mode (default) ─────────────────── */
 :root {
-  --bg:     #0a0a0f;
-  --bg2:    #111118;
-  --border: rgba(255,255,255,0.07);
-  --text:   #e8e8f0;
-  --muted:  #6b6b82;
-  --accent: #1db954;
-  --mono:   'Space Mono', monospace;
-  --sans:   'DM Sans', sans-serif;
+  --bg:      #0a0a0f;
+  --bg2:     #111118;
+  --bg3:     #1a1a24;
+  --border:  rgba(255,255,255,0.07);
+  --border2: rgba(255,255,255,0.15);
+  --text:    #e8e8f0;
+  --muted:   #6b6b82;
+  --accent:  #1db954;
+  --plot-bg: #0a0a0f;
+  --plot-paper: #0a0a0f;
+  --plot-grid: rgba(255,255,255,0.06);
+  --plot-font: #e8e8f0;
+  --mono: 'Space Mono', monospace;
+  --sans: 'DM Sans', sans-serif;
   --header-h: 72px;
+}
+
+/* ── Light mode ──────────────────────────── */
+.light {
+  --bg:      #f5f5f0;
+  --bg2:     #ebebе4;
+  --bg3:     #e0e0d8;
+  --border:  rgba(0,0,0,0.08);
+  --border2: rgba(0,0,0,0.18);
+  --text:    #1a1a1a;
+  --muted:   #888880;
+  --accent:  #1db954;
+  --plot-bg: #f5f5f0;
+  --plot-paper: #f5f5f0;
+  --plot-grid: rgba(0,0,0,0.06);
+  --plot-font: #1a1a1a;
 }
 
 html, body {
@@ -22,6 +45,7 @@ html, body {
   font-size: 14px;
   -webkit-font-smoothing: antialiased;
   overflow: hidden;
+  transition: background 0.3s, color 0.3s;
 }
 
 /* ── Dashboard wrapper ───────────────────── */
@@ -29,6 +53,8 @@ html, body {
   display: flex;
   flex-direction: column;
   height: 100vh;
+  background: var(--bg);
+  transition: background 0.3s;
 }
 
 /* ── Header ──────────────────────────────── */
@@ -42,6 +68,7 @@ html, body {
   padding: 0 20px;
   gap: 24px;
   flex-shrink: 0;
+  transition: background 0.3s, border-color 0.3s;
 }
 
 .header-left {
@@ -50,10 +77,7 @@ html, body {
   gap: 10px;
   flex-shrink: 0;
 }
-.logo {
-  font-size: 22px;
-  color: var(--accent);
-}
+.logo { font-size: 22px; color: var(--accent); }
 .header-left h1 {
   font-family: var(--mono);
   font-size: 14px;
@@ -90,15 +114,13 @@ html, body {
   color: var(--muted);
 }
 
-/* Genre checklist */
-.genre-checklist {
-  display: flex;
-  gap: 6px;
-}
+/* ── Genre checklist ─────────────────────── */
+.genre-checklist { display: flex; gap: 6px; }
+
 .genre-label {
   padding: 3px 10px;
   border-radius: 20px;
-  border: 1px solid rgba(255,255,255,0.15);
+  border: 1px solid var(--border2);
   color: var(--muted);
   font-family: var(--mono);
   font-size: 11px;
@@ -107,21 +129,41 @@ html, body {
   letter-spacing: 0.04em;
   transition: all 0.15s;
   user-select: none;
+  background: transparent;
 }
 .genre-input { display: none; }
-.genre-input:checked + .genre-label {
-  background: var(--accent);
-  border-color: var(--accent);
-  color: #000;
-}
 
-/* Year slider */
-.year-slider { width: 260px; }
-.rc-slider-track { background: var(--accent) !important; }
-.rc-slider-handle {
-  border-color: var(--accent) !important;
-  background: var(--accent) !important;
+/* Each genre gets its own active color */
+.genre-input[value="edm"]:checked    + .genre-label { background: #4361ee; border-color: #4361ee; color: #fff; }
+.genre-input[value="latin"]:checked  + .genre-label { background: #06d6a0; border-color: #06d6a0; color: #000; }
+.genre-input[value="pop"]:checked    + .genre-label { background: #f72585; border-color: #f72585; color: #fff; }
+.genre-input[value="r&b"]:checked    + .genre-label { background: #4cc9f0; border-color: #4cc9f0; color: #000; }
+.genre-input[value="rap"]:checked    + .genre-label { background: #7209b7; border-color: #7209b7; color: #fff; }
+.genre-input[value="rock"]:checked   + .genre-label { background: #f77f00; border-color: #f77f00; color: #fff; }
+
+.genre-label:hover { border-color: var(--accent); color: var(--text); }
+
+/* ── Theme toggle ────────────────────────── */
+.theme-toggle {
+  background: transparent;
+  border: 1px solid var(--border2);
+  color: var(--text);
+  font-size: 16px;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.15s;
+  flex-shrink: 0;
+  padding: 0;
 }
+.theme-toggle:hover { border-color: var(--accent); }
+
+/* ── Year slider ─────────────────────────── */
+.year-slider { width: 260px; }
 
 .data-count {
   font-family: var(--mono);
@@ -148,9 +190,9 @@ html, body {
   flex-direction: column;
   min-height: 0;
   overflow: hidden;
+  transition: background 0.3s;
 }
 
-.viz-wide { grid-column: span 1; }
 .viz-card:nth-child(4) { grid-column: 1 / 2; }
 .viz-card:nth-child(5) { grid-column: 2 / 4; }
 
@@ -167,28 +209,20 @@ html, body {
   justify-content: space-between;
   align-items: center;
 }
-.viz-label span {
-  color: var(--accent);
-  font-size: 9px;
-}
+.viz-label span { color: var(--accent); font-size: 9px; }
 
-.viz-graph {
-  flex: 1;
-  min-height: 0;
-}
-.viz-graph .js-plotly-plot,
-.viz-graph .plot-container,
-.viz-graph .svg-container {
-  height: 100% !important;
-}
-
-/* ── Fullscreen ──────────────────────────── */
 .viz-label-right {
   display: flex;
   align-items: center;
   gap: 8px;
 }
 
+.viz-graph { flex: 1; min-height: 0; }
+.viz-graph .js-plotly-plot,
+.viz-graph .plot-container,
+.viz-graph .svg-container { height: 100% !important; }
+
+/* ── Fullscreen ──────────────────────────── */
 .fullscreen-btn {
   background: transparent;
   border: 1px solid var(--border);
@@ -200,15 +234,11 @@ html, body {
   line-height: 1;
   transition: all 0.15s;
 }
-.fullscreen-btn:hover {
-  border-color: var(--accent);
-  color: var(--accent);
-}
+.fullscreen-btn:hover { border-color: var(--accent); color: var(--accent); }
 
 .viz-fullscreen {
   position: fixed !important;
-  top: 0 !important;
-  left: 0 !important;
+  top: 0 !important; left: 0 !important;
   width: 100vw !important;
   height: 100vh !important;
   z-index: 999 !important;
@@ -217,15 +247,13 @@ html, body {
 
 .close-fullscreen-btn {
   position: fixed;
-  top: 16px;
-  right: 20px;
+  top: 16px; right: 20px;
   z-index: 1000;
   background: var(--bg2);
-  border: 1px solid rgba(255,255,255,0.12);
+  border: 1px solid var(--border2);
   color: var(--text);
   font-size: 18px;
-  width: 36px;
-  height: 36px;
+  width: 36px; height: 36px;
   border-radius: 50%;
   cursor: pointer;
   display: flex;
@@ -233,7 +261,4 @@ html, body {
   justify-content: center;
   transition: all 0.15s;
 }
-.close-fullscreen-btn:hover {
-  border-color: var(--accent);
-  color: var(--accent);
-}
+.close-fullscreen-btn:hover { border-color: var(--accent); color: var(--accent); }
