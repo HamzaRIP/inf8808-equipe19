@@ -1,22 +1,23 @@
 import plotly.graph_objects as go
 
-PLACEHOLDER_STYLE = dict(
-    plot_bgcolor='#0a0a0f',
-    paper_bgcolor='#0a0a0f',
-    font_color='#6b6b82',
-    xaxis=dict(visible=False),
-    yaxis=dict(visible=False),
-    annotations=[dict(
-        text='En cours…',
-        x=0.5, y=0.5,
-        xref='paper', yref='paper',
-        showarrow=False,
-        font=dict(size=14, color='#6b6b82', family='Space Mono'),
-    )],
-    margin=dict(l=0, r=0, t=0, b=0),
-)
+DARK  = dict(bg='#0a0a0f', paper='#0a0a0f', font='#6b6b82')
+LIGHT = dict(bg='#f5f5f0', paper='#f5f5f0', font='#888880')
 
-def render(df):
+def render(df, theme='dark'):
+    t = LIGHT if theme == 'light' else DARK
     fig = go.Figure()
-    fig.update_layout(**PLACEHOLDER_STYLE)
+    fig.update_layout(
+        plot_bgcolor=t['bg'],
+        paper_bgcolor=t['paper'],
+        xaxis=dict(visible=False, showgrid=False, zeroline=False),
+        yaxis=dict(visible=False, showgrid=False, zeroline=False),
+        margin=dict(l=0, r=0, t=0, b=0),
+        annotations=[dict(
+            text='V4 — Chord Diagram (Noah)',
+            x=0.5, y=0.5,
+            xref='paper', yref='paper',
+            showarrow=False,
+            font=dict(size=13, color=t['font'], family='Space Mono'),
+        )],
+    )
     return fig
