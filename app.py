@@ -23,6 +23,7 @@ V3_TOP_N_MAX = 80
 
 # ── App ──────────────────────────────────────────────────────────────────────
 app = dash.Dash(__name__)
+server = app.server          # ← add this line
 app.title = 'Spotify Factors — Équipe 19'
 
 app.layout = html.Div(className='dashboard', children=[
