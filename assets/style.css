@@ -181,3 +181,88 @@ html, body {
 .viz-graph .svg-container {
   height: 100% !important;
 }
+
+/* ── Viz 03 — bulles sous-genres + panneau paramètres ─────────────────────── */
+.viz-card-v3 .viz-v3-body {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(88px, 11%);
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.viz-graph-v3 {
+  min-width: 0;
+  min-height: 0;
+}
+
+.viz-v3-params {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  padding: 4px 6px 8px 8px;
+  border-left: 1px solid var(--border);
+  overflow-x: hidden;
+  overflow-y: auto;
+  font-family: var(--mono);
+  background: rgba(0, 0, 0, 0.2);
+}
+
+.viz-v3-params-title {
+  font-size: 9px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--muted);
+  margin-bottom: 2px;
+}
+
+.viz-v3-field-label {
+  font-size: 9px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--muted);
+}
+
+/* react-select (Dash) — uniquement le panneau paramètres (fond sombre + texte clair) */
+.viz-v3-params .Select-control,
+.viz-v3-params .dash-dropdown .Select-control {
+  min-height: 28px !important;
+  background-color: var(--bg2) !important;
+  border-color: var(--border) !important;
+  border-radius: 4px;
+  box-shadow: none !important;
+}
+
+.viz-v3-params .Select-value-label,
+.viz-v3-params .Select-placeholder,
+.viz-v3-params .Select-input > input,
+.viz-v3-params [class*="singleValue"],
+.viz-v3-params [class*="placeholder"] {
+  color: var(--text) !important;
+  font-family: var(--mono) !important;
+  font-size: 10px !important;
+}
+
+.viz-v3-params .Select-menu-outer,
+.viz-v3-params .Select-menu {
+  background-color: var(--bg2) !important;
+  border: 1px solid var(--border) !important;
+  font-family: var(--mono);
+  font-size: 11px;
+  z-index: 5000 !important;
+}
+
+.viz-v3-params .VirtualizedSelectOption {
+  background-color: var(--bg2);
+  color: var(--text) !important;
+}
+
+.viz-v3-params .VirtualizedSelectFocusedOption {
+  background-color: rgba(29, 185, 84, 0.25) !important;
+}
+
+.viz-v3-slider {
+  margin-top: 2px;
+  margin-bottom: 4px;
+}
