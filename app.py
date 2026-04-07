@@ -4,8 +4,7 @@ import pandas as pd
 
 from components.v1_bar_chart import render as v1
 from components.v2_dumbbell import render as v2
-from components.v3_bubble import render as v3_render
-from components.v3_bubble import V3_SIZE_OPTIONS, V3_X_OPTIONS, V3_Y_OPTIONS
+from components.v3_bubble import render as v3
 from components.v4_chord import render as v4
 from components.v5_slope import render as v5
 
@@ -19,12 +18,30 @@ GENRES = sorted(df['playlist_genre'].dropna().unique().tolist())
 MIN_YEAR = int(df['year'].min())
 MAX_YEAR = int(df['year'].max())
 
-V3_TOP_N_MAX = 80
-
 # ── App ──────────────────────────────────────────────────────────────────────
 app = dash.Dash(__name__)
-server = app.server          # ← add this line
+server = app.server
 app.title = 'Spotify Factors — Équipe 19'
+
+def viz_card(card_id, graph_id, fullscreen_id, label, questions, extra_class=''):
+    return html.Div(
+        id=card_id,
+        className=f'viz-card {extra_class}'.strip(),
+        children=[
+            html.Div(className='viz-label', children=[
+                label,
+                html.Div(className='viz-label-right', children=[
+                    html.Span(questions),
+                    html.Button('⛶', id=fullscreen_id, className='fullscreen-btn', n_clicks=0),
+                ]),
+            ]),
+            dcc.Graph(
+                id=graph_id,
+                className='viz-graph',
+                config={'displayModeBar': False},
+            ),
+        ]
+    )
 
 app.layout = html.Div(className='dashboard', children=[
 
@@ -58,6 +75,7 @@ app.layout = html.Div(className='dashboard', children=[
                     value=[MIN_YEAR, MAX_YEAR],
                     marks={y: str(y) for y in range(MIN_YEAR, MAX_YEAR + 1, 10)},
                     tooltip={'placement': 'bottom', 'always_visible': False},
+                    debounce=True,
                     className='year-slider',
                 ),
             ]),
@@ -67,88 +85,24 @@ app.layout = html.Div(className='dashboard', children=[
 
     # ── Grid ─────────────────────────────────────────────────────────────────
     html.Main(className='grid', children=[
-        html.Div(className='viz-card', children=[
-            html.Div(className='viz-label', children=[
-                '01 — BAR CHART CORRÉLATIONS',
-                html.Span('Q1 · Q4 · Q5'),
-            ]),
-            dcc.Graph(id='v1', className='viz-graph', config={'displayModeBar': False}),
-        ]),
-        html.Div(className='viz-card', children=[
-            html.Div(className='viz-label', children=[
-                '02 — DUMBBELL CHART',
-                html.Span('Q2 · Q3'),
-            ]),
-            dcc.Graph(id='v2', className='viz-graph', config={'displayModeBar': False}),
-        ]),
-        html.Div(className='viz-card viz-card-v3', children=[
-            html.Div(className='viz-label', children=[
-                '03 — BUBBLE CHART',
-                html.Span('Q5 · Q7 · Q8'),
-            ]),
-            html.Div(className='viz-v3-body', children=[
-                dcc.Graph(id='v3', className='viz-graph viz-graph-v3', config={'displayModeBar': False}),
-                html.Div(className='viz-v3-params', children=[
-                    html.Div('Paramètres', className='viz-v3-params-title'),
-                    html.Label('Axe X', className='viz-v3-field-label'),
-                    dcc.Dropdown(
-                        id='v3-axis-x',
-                        options=V3_X_OPTIONS,
-                        value='acousticness_sqrt',
-                        clearable=False,
-                        className='viz-v3-dropdown',
-                    ),
-                    html.Label('Axe Y', className='viz-v3-field-label'),
-                    dcc.Dropdown(
-                        id='v3-axis-y',
-                        options=V3_Y_OPTIONS,
-                        value='track_popularity',
-                        clearable=False,
-                        className='viz-v3-dropdown',
-                    ),
-                    html.Label('Taille', className='viz-v3-field-label'),
-                    dcc.Dropdown(
-                        id='v3-size',
-                        options=V3_SIZE_OPTIONS,
-                        value='valence',
-                        clearable=False,
-                        className='viz-v3-dropdown',
-                    ),
-                    html.Label('Top N', className='viz-v3-field-label'),
-                    dcc.Slider(
-                        id='v3-top-n',
-                        min=3,
-                        max=V3_TOP_N_MAX,
-                        step=1,
-                        value=18,
-                        marks=None,
-                        tooltip={'placement': 'bottom', 'always_visible': False},
-                        className='viz-v3-slider',
-                    ),
-                ]),
-            ]),
-        ]),
-        html.Div(className='viz-card viz-wide', children=[
-            html.Div(className='viz-label', children=[
-                '04 — CHORD DIAGRAM',
-                html.Span('Q6 · Q9 · Q10'),
-            ]),
-            dcc.Graph(id='v4', className='viz-graph', config={'displayModeBar': False}),
-        ]),
-        html.Div(className='viz-card viz-wide', children=[
-            html.Div(className='viz-label', children=[
-                '05 — SLOPE CHART TEMPOREL',
-                html.Span('Q10–13'),
-            ]),
-            dcc.Graph(id='v5', className='viz-graph', config={'displayModeBar': False}),
-        ]),
+        viz_card('card-v1', 'v1', 'fullscreen-v1', '01 — BAR CHART CORRÉLATIONS', 'Q1 · Q4 · Q5'),
+        viz_card('card-v2', 'v2', 'fullscreen-v2', '02 — DUMBBELL CHART',          'Q2 · Q3'),
+        viz_card('card-v3', 'v3', 'fullscreen-v3', '03 — BUBBLE CHART',            'Q5 · Q7 · Q8'),
+        viz_card('card-v4', 'v4', 'fullscreen-v4', '04 — CHORD DIAGRAM',           'Q6 · Q9 · Q10'),
+        viz_card('card-v5', 'v5', 'fullscreen-v5', '05 — SLOPE CHART TEMPOREL',    'Q10–13'),
     ]),
+
+    # ── Close fullscreen button ───────────────────────────────────────────────
+    html.Button('✕', id='close-fullscreen', className='close-fullscreen-btn',
+                n_clicks=0, style={'display': 'none'}),
 ])
 
-# ── Callbacks ────────────────────────────────────────────────────────────────
+
+# ── Callback: update figures ──────────────────────────────────────────────────
 @app.callback(
     Output('v1', 'figure'),
     Output('v2', 'figure'),
+    Output('v3', 'figure'),
     Output('v4', 'figure'),
     Output('v5', 'figure'),
     Output('data-count', 'children'),
@@ -157,41 +111,44 @@ app.layout = html.Div(className='dashboard', children=[
     Input('year-filter', 'value'),
 )
 def update_all(genres, year_range):
-    if not genres:
-        filtered = df.iloc[0:0]
-    else:
-        filtered = df[
-            df['playlist_genre'].isin(genres) &
-            df['year'].between(year_range[0], year_range[1])
-        ]
+    filtered = df[
+        df['playlist_genre'].isin(genres) &
+        df['year'].between(year_range[0], year_range[1])
+    ]
     count = f'{len(filtered):,} titres'
     year_label = f'Période : {year_range[0]} – {year_range[1]}'
-    return v1(filtered), v2(filtered), v4(filtered), v5(filtered), count, year_label
+    return v1(filtered), v2(filtered), v3(filtered), v4(filtered), v5(filtered), count, year_label
 
+
+# ── Callback: fullscreen ──────────────────────────────────────────────────────
+BASE_CLASSES = ['viz-card', 'viz-card', 'viz-card', 'viz-card', 'viz-card']
 
 @app.callback(
-    Output('v3', 'figure'),
-    Input('genre-filter', 'value'),
-    Input('year-filter', 'value'),
-    Input('v3-axis-x', 'value'),
-    Input('v3-axis-y', 'value'),
-    Input('v3-size', 'value'),
-    Input('v3-top-n', 'value'),
+    Output('card-v1', 'className'),
+    Output('card-v2', 'className'),
+    Output('card-v3', 'className'),
+    Output('card-v4', 'className'),
+    Output('card-v5', 'className'),
+    Output('close-fullscreen', 'style'),
+    Input('fullscreen-v1', 'n_clicks'),
+    Input('fullscreen-v2', 'n_clicks'),
+    Input('fullscreen-v3', 'n_clicks'),
+    Input('fullscreen-v4', 'n_clicks'),
+    Input('fullscreen-v5', 'n_clicks'),
+    Input('close-fullscreen', 'n_clicks'),
+    prevent_initial_call=True,
 )
-def update_v3(genres, year_range, x_key, y_key, size_key, top_n):
-    if not genres:
-        filtered = df.iloc[0:0]
-    else:
-        filtered = df[
-            df['playlist_genre'].isin(genres) &
-            df['year'].between(year_range[0], year_range[1])
-        ]
-    x_key = x_key or 'acousticness_sqrt'
-    y_key = y_key or 'track_popularity'
-    size_key = size_key or 'valence'
-    n = int(top_n) if top_n is not None else 18
-    n = max(1, min(n, V3_TOP_N_MAX))
-    return v3_render(filtered, x_key, y_key, size_key, n)
+def toggle_fullscreen(n1, n2, n3, n4, n5, n_close):
+    triggered = dash.ctx.triggered_id
+    classes = list(BASE_CLASSES)
+    close_style = {'display': 'none'}
+
+    if triggered != 'close-fullscreen':
+        idx = int(triggered.split('-v')[1]) - 1
+        classes[idx] += ' viz-fullscreen'
+        close_style = {'display': 'flex'}
+
+    return *classes, close_style
 
 
 if __name__ == '__main__':
