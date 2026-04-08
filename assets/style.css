@@ -262,3 +262,33 @@ html, body {
   transition: all 0.15s;
 }
 .close-fullscreen-btn:hover { border-color: var(--accent); color: var(--accent); }
+
+/* ── V3 inline controls ──────────────────── */
+.v3-controls {
+  display: flex;
+  gap: 8px;
+  padding: 6px 12px;
+  border-bottom: 1px solid var(--border);
+  flex-shrink: 0;
+  align-items: flex-end;
+  flex-wrap: wrap;
+}
+.v3-controls > div {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  flex: 1;
+  min-width: 100px;
+}
+.v3-dropdown .Select-control,
+.v3-dropdown .Select-menu-outer {
+  background: var(--bg3) !important;
+  border-color: var(--border2) !important;
+  color: var(--text) !important;
+  font-family: var(--mono) !important;
+  font-size: 11px !important;
+}
+.v3-dropdown .Select-value-label { color: var(--text) !important; }
+.v3-dropdown .Select-option { background: var(--bg3) !important; color: var(--text) !important; }
+.v3-dropdown .Select-option.is-focused { background: var(--bg2) !important; }
+.v3-slider { padding: 4px 0; }
