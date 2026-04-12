@@ -4,37 +4,37 @@
 
 /* ── Dark mode (default) ─────────────────── */
 :root {
-  --bg:      #0a0a0f;
-  --bg2:     #111118;
-  --bg3:     #1a1a24;
-  --border:  rgba(255,255,255,0.07);
-  --border2: rgba(255,255,255,0.15);
-  --text:    #e8e8f0;
-  --muted:   #6b6b82;
-  --accent:  #1db954;
-  --plot-bg: #0a0a0f;
+  --bg:         #0a0a0f;
+  --bg2:        #111118;
+  --bg3:        #1a1a24;
+  --border:     rgba(255,255,255,0.07);
+  --border2:    rgba(255,255,255,0.15);
+  --text:       #e8e8f0;
+  --muted:      #6b6b82;
+  --accent:     #1db954;
+  --plot-bg:    #0a0a0f;
   --plot-paper: #0a0a0f;
-  --plot-grid: rgba(255,255,255,0.06);
-  --plot-font: #e8e8f0;
-  --mono: 'Space Mono', monospace;
-  --sans: 'DM Sans', sans-serif;
-  --header-h: 72px;
+  --plot-grid:  rgba(255,255,255,0.06);
+  --plot-font:  #e8e8f0;
+  --mono:       'Space Mono', monospace;
+  --sans:       'DM Sans', sans-serif;
+  --header-h:   72px;
 }
 
 /* ── Light mode ──────────────────────────── */
 .light {
-  --bg:      #f5f5f0;
-  --bg2:     #ebebе4;
-  --bg3:     #e0e0d8;
-  --border:  rgba(0,0,0,0.08);
-  --border2: rgba(0,0,0,0.18);
-  --text:    #1a1a1a;
-  --muted:   #888880;
-  --accent:  #1db954;
-  --plot-bg: #f5f5f0;
+  --bg:         #f5f5f0;
+  --bg2:        #eaeae2;
+  --bg3:        #e0e0d8;
+  --border:     rgba(0,0,0,0.08);
+  --border2:    rgba(0,0,0,0.18);
+  --text:       #1a1a1a;
+  --muted:      #888880;
+  --accent:     #1db954;
+  --plot-bg:    #f5f5f0;
   --plot-paper: #f5f5f0;
-  --plot-grid: rgba(0,0,0,0.06);
-  --plot-font: #1a1a1a;
+  --plot-grid:  rgba(0,0,0,0.06);
+  --plot-font:  #1a1a1a;
 }
 
 html, body {
@@ -69,6 +69,7 @@ html, body {
   gap: 24px;
   flex-shrink: 0;
   transition: background 0.3s, border-color 0.3s;
+  z-index: 1000;
 }
 
 .header-left {
@@ -114,34 +115,60 @@ html, body {
   color: var(--muted);
 }
 
-/* ── Genre checklist ─────────────────────── */
-.genre-checklist { display: flex; gap: 6px; }
+/* ── Genre buttons ───────────────────────────────────────────────────────────
+   .genre-btn          → désactivé : fond noir (#0a0a0f), outline vert discret
+   .genre-btn.active   → activé    : fond vert + glow
+   ─────────────────────────────────────────────────────────────────────────── */
+.genre-checklist { display: flex; gap: 6px; align-items: center; }
 
-.genre-label {
-  padding: 3px 10px;
+/* État DÉSACTIVÉ */
+.genre-btn {
+  padding: 4px 11px;
   border-radius: 20px;
-  border: 1px solid var(--border2);
+  border: 1.5px solid rgba(29, 185, 84, 0.40);
   color: var(--muted);
+  background: #0d0d14;          /* presque noir, visible sur tout fond */
   font-family: var(--mono);
   font-size: 11px;
+  font-weight: 700;
   cursor: pointer;
   text-transform: uppercase;
-  letter-spacing: 0.04em;
-  transition: all 0.15s;
+  letter-spacing: 0.05em;
+  transition: background 0.15s, border-color 0.15s, color 0.15s, box-shadow 0.15s;
   user-select: none;
-  background: transparent;
+  line-height: 1.4;
 }
-.genre-input { display: none; }
 
-/* Each genre gets its own active color */
-.genre-input[value="edm"]:checked    + .genre-label { background: #4361ee; border-color: #4361ee; color: #fff; }
-.genre-input[value="latin"]:checked  + .genre-label { background: #06d6a0; border-color: #06d6a0; color: #000; }
-.genre-input[value="pop"]:checked    + .genre-label { background: #f72585; border-color: #f72585; color: #fff; }
-.genre-input[value="r&b"]:checked    + .genre-label { background: #4cc9f0; border-color: #4cc9f0; color: #000; }
-.genre-input[value="rap"]:checked    + .genre-label { background: #7209b7; border-color: #7209b7; color: #fff; }
-.genre-input[value="rock"]:checked   + .genre-label { background: #f77f00; border-color: #f77f00; color: #fff; }
+/* Light mode désactivé : fond très clair bien contrasté */
+.light .genre-btn {
+  background: #d8d8d0;
+  border-color: rgba(29, 185, 84, 0.50);
+  color: #666660;
+}
 
-.genre-label:hover { border-color: var(--accent); color: var(--text); }
+/* État ACTIVÉ */
+.genre-btn.active {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #000;
+  box-shadow:
+    0 0 6px  rgba(29, 185, 84, 0.60),
+    0 0 14px rgba(29, 185, 84, 0.25);
+}
+
+/* Survol désactivé */
+.genre-btn:not(.active):hover {
+  border-color: var(--accent);
+  color: var(--text);
+  background: rgba(29, 185, 84, 0.12);
+}
+
+/* Survol activé */
+.genre-btn.active:hover {
+  box-shadow:
+    0 0 8px  rgba(29, 185, 84, 0.80),
+    0 0 20px rgba(29, 185, 84, 0.35);
+}
 
 /* ── Theme toggle ────────────────────────── */
 .theme-toggle {
@@ -236,19 +263,24 @@ html, body {
 }
 .fullscreen-btn:hover { border-color: var(--accent); color: var(--accent); }
 
+/* Fullscreen card (z-index 998 < header 1000) */
 .viz-fullscreen {
   position: fixed !important;
-  top: 0 !important; left: 0 !important;
+  top: 0 !important;
+  left: 0 !important;
   width: 100vw !important;
   height: 100vh !important;
-  z-index: 999 !important;
+  z-index: 998 !important;
   grid-column: unset !important;
+  padding-top: var(--header-h);   /* contenu sous le header flottant */
 }
 
+/* Bouton fermer — sous le header */
 .close-fullscreen-btn {
   position: fixed;
-  top: 16px; right: 20px;
-  z-index: 1000;
+  top: calc(var(--header-h) + 12px);
+  right: 20px;
+  z-index: 1001;
   background: var(--bg2);
   border: 1px solid var(--border2);
   color: var(--text);
@@ -262,3 +294,40 @@ html, body {
   transition: all 0.15s;
 }
 .close-fullscreen-btn:hover { border-color: var(--accent); color: var(--accent); }
+
+/* ── V3 inline controls ──────────────────── */
+.v3-controls {
+  display: flex;
+  gap: 8px;
+  padding: 6px 12px;
+  border-bottom: 1px solid var(--border);
+  flex-shrink: 0;
+  align-items: flex-end;
+  flex-wrap: wrap;
+}
+.v3-controls > div {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  flex: 1;
+  min-width: 100px;
+}
+.v3-dropdown .Select-control,
+.v3-dropdown .Select-menu-outer {
+  background: var(--bg3) !important;
+  border-color: var(--border2) !important;
+  color: var(--text) !important;
+  font-family: var(--mono) !important;
+  font-size: 11px !important;
+}
+.v3-dropdown .Select-value-label { color: var(--text) !important; }
+.v3-dropdown .Select-option { background: var(--bg3) !important; color: var(--text) !important; }
+.v3-dropdown .Select-option.is-focused { background: var(--bg2) !important; }
+.v3-slider { padding: 4px 0; }
+
+/* ── Light mode : fond des figures Plotly ── */
+.light .js-plotly-plot .bg,
+.light .js-plotly-plot rect.bg {
+  fill: var(--plot-bg) !important;
+}
+.light .plot-container { background: var(--plot-bg); }
