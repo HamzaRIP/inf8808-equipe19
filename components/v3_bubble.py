@@ -23,12 +23,12 @@ THEME = {
 FONT_MONO = 'Space Mono, monospace'
 
 COLORS_GENRE = {
-    'pop':   '#E74C3C',
-    'rock':  '#6d6d78',
-    'r&b':   '#A569BD',
-    'rap':   '#2C3E50',
-    'latin': '#C9780E',
-    'edm':   '#4A90C2',
+    'pop':   '#1DB954', 
+    'rap':   '#F4A261',
+    'rock':  '#E63946', 
+    'latin': '#A8DADC',
+    'r&b':   '#C77DFF', 
+    'edm':   '#00B4D8',
 }
 FALLBACK_GENRE_COLOR = '#6d6d78'
 
