@@ -107,13 +107,28 @@ def render(df, theme: str = 'dark'):
         bx2, by2 = bezier_ribbon(p2ex, p2ey, p1x, p1y)
         rx = np.concatenate([ax1, bx1, ax2, bx2, [ax1[0]]])
         ry = np.concatenate([ay1, by1, ay2, by2, [ay1[0]]])
-        hover = (f'<b>{g1.upper()} ↔ {g2.upper()}</b><br>'
-                 f'Titres partagés : <b>{val:,}</b><br>'
-                 f'Part de {g1} : {pct1:.1f} %<br>Part de {g2} : {pct2:.1f} %')
+
+        # Polygone visuel — sans hover (hoverinfo='skip')
         traces.append(go.Scatter(
             x=rx, y=ry, mode='lines', fill='toself',
             fillcolor=rgba(color, 0.22), line=dict(color=rgba(color, 0.5), width=0.8),
-            hoverinfo='text', hovertext=hover,
+            hoverinfo='skip',
+            showlegend=False))
+
+        # Point fantôme au centre du ruban — porte le tooltip
+        cx = float(np.mean(rx)); cy = float(np.mean(ry))
+        traces.append(go.Scatter(
+            x=[cx], y=[cy],
+            mode='markers',
+            marker=dict(size=18, color='rgba(0,0,0,0)', line=dict(width=0)),
+            customdata=[[g1.upper(), g2.upper(), val, pct1, pct2]],
+            hovertemplate=(
+                '<b>%{customdata[0]} ↔ %{customdata[1]}</b><br>'
+                'Titres partagés : <b>%{customdata[2]:,}</b><br>'
+                'Part de %{customdata[0]} : %{customdata[3]:.1f} %<br>'
+                'Part de %{customdata[1]} : %{customdata[4]:.1f} %'
+                '<extra></extra>'
+            ),
             hoverlabel=dict(bgcolor=CARD, bordercolor=color,
                             font=dict(color=TEXT, family=FONT, size=12)),
             showlegend=False))
@@ -124,12 +139,28 @@ def render(df, theme: str = 'dark'):
         axi, ayi = arc_points(ends[g], starts[g], R_IN)
         px = np.concatenate([ax, axi, [ax[0]]]); py = np.concatenate([ay, ayi, [ay[0]]])
         pct = genre_totals[g] / total_tracks * 100
-        hover = (f'<b>{g.upper()}</b><br>Titres : <b>{genre_totals[g]:,}</b><br>'
-                 f'Part du total : {pct:.1f} %')
+
+        # Polygone visuel — sans hover
         traces.append(go.Scatter(
             x=px, y=py, mode='lines', fill='toself',
             fillcolor=rgba(color, 0.85), line=dict(color=color, width=1.5),
-            hoverinfo='text', hovertext=hover,
+            hoverinfo='skip',
+            showlegend=False))
+
+        # Point fantôme au milieu de l'arc — porte le tooltip
+        mid = mid_angle(starts[g], ends[g])
+        r_mid = (R_OUT + R_IN) / 2
+        traces.append(go.Scatter(
+            x=[r_mid * np.cos(mid)], y=[r_mid * np.sin(mid)],
+            mode='markers',
+            marker=dict(size=22, color='rgba(0,0,0,0)', line=dict(width=0)),
+            customdata=[[g.upper(), genre_totals[g], pct]],
+            hovertemplate=(
+                '<b>%{customdata[0]}</b><br>'
+                'Titres : <b>%{customdata[1]:,}</b><br>'
+                'Part du total : %{customdata[2]:.1f} %'
+                '<extra></extra>'
+            ),
             hoverlabel=dict(bgcolor=CARD, bordercolor=color,
                             font=dict(color=TEXT, family=FONT, size=12)),
             showlegend=False))
