@@ -101,18 +101,20 @@ def render(df: pd.DataFrame, theme: str = 'dark') -> go.Figure:
                        if feat in era_df.columns and not pd.isna(era_df[feat].iloc[-1])]
     label_positions.sort(key=lambda x: x[1])
 
-    min_gap = 0.06; adjusted = []
-    for feat, y, meta in label_positions:
-        if not adjusted: adjusted.append([feat, y, meta])
-        else:
-            prev_y = adjusted[-1][1]
-            adjusted.append([feat, max(y, prev_y + min_gap), meta])
-    if adjusted:
-        overflow = adjusted[-1][1] - 0.98
-        if overflow > 0:
-            for i in range(len(adjusted)): adjusted[i][1] -= overflow
+    n_labels = len(label_positions)
+    y_lo, y_hi = 0.1, 0.9
 
-    label_x = x_positions[-1] + 0.8
+    adjusted = []
+
+    if n_labels > 1:
+        target_positions = np.linspace(y_lo, y_hi, n_labels)
+    else:
+        target_positions = [0.5]
+
+    for (feat, real_y, meta), y_target in zip(label_positions, target_positions):
+        adjusted.append([feat, y_target, meta])
+
+    label_x = x_positions[-1] + 0.55
     for (feat, real_y, meta), (_, y_adj, _) in zip(label_positions, adjusted):
         fig.add_shape(type='line', x0=x_positions[-1]+0.05, x1=label_x-0.05,
                       y0=real_y, y1=y_adj,
@@ -128,13 +130,13 @@ def render(df: pd.DataFrame, theme: str = 'dark') -> go.Figure:
         plot_bgcolor=t['bg'], paper_bgcolor=t['bg'],
         font=dict(color=t['text'], family=FONT_MONO, size=12),
         xaxis=dict(tickvals=x_positions, ticktext=era_labels, showgrid=False,
-                   zeroline=False, range=[-0.3, len(era_labels) - 1 + 2],
+                   zeroline=False, range=[-0.3, len(era_labels) - 1 + 2.2],
                    fixedrange=True, tickfont=dict(color=t['text'])),
-        yaxis=dict(title='Valeur normalisée (0 – 1)', range=[-0.05, 1.1],
+        yaxis=dict(title='Valeur normalisée (0 – 1)', range=[-0.05, 1.05],
                    showgrid=True, gridcolor=t['grid'], zeroline=False,
                    fixedrange=True, tickfont=dict(color=t['text'])),
         legend=dict(orientation='h', x=0, y=1.08, xanchor='left', yanchor='bottom',
                     font=dict(size=11, family=FONT_MONO, color=t['text']),
                     bgcolor='rgba(0,0,0,0)', itemclick='toggleothers', itemdoubleclick='toggle'),
-        hovermode='closest', margin=dict(l=60, r=180, t=70, b=48), dragmode=False)
+        hovermode='closest', margin=dict(l=60, r=220, t=70, b=48), dragmode=False)
     return fig
