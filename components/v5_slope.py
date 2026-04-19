@@ -53,9 +53,8 @@ def _era_means(df: pd.DataFrame) -> pd.DataFrame:
             row[feat] = subset[feat].mean() if feat in subset.columns and len(subset) > 0 else np.nan
         rows.append(row)
     result = pd.DataFrame(rows).set_index('era')
-    for feat in FEATURES:
-        col = result[feat]; mn, mx = col.min(), col.max()
-        result[feat] = (col - mn) / (mx - mn) if mx > mn else 0.5
+    if 'track_popularity' in result.columns:
+        result['track_popularity'] = result['track_popularity'] / 100
     return result
 
 
@@ -94,7 +93,7 @@ def render(df: pd.DataFrame, theme: str = 'dark') -> go.Figure:
                         line=dict(color=t['marker_border'], width=2)),
             text=hover_y, customdata=era_labels,
             hovertemplate=(f'<b>{label}</b><br>%{{customdata}}<br>'
-                           'Valeur normalisée : %{text}<extra></extra>')))
+                           'Valeur moyenne : %{text}<extra></extra>')))
 
     label_positions = [(feat, era_df[feat].iloc[-1], meta)
                        for feat, meta in FEATURES.items()
@@ -102,17 +101,24 @@ def render(df: pd.DataFrame, theme: str = 'dark') -> go.Figure:
     label_positions.sort(key=lambda x: x[1])
 
     n_labels = len(label_positions)
-    y_lo, y_hi = 0.1, 0.9
+    y_lo, y_hi = 0.02, 0.98
+    min_gap = (y_hi - y_lo) / max(n_labels, 1)  # ~0.12 for 8 labels
 
-    adjusted = []
+    adjusted = [[feat, y, meta] for feat, y, meta in label_positions]
 
-    if n_labels > 1:
-        target_positions = np.linspace(y_lo, y_hi, n_labels)
-    else:
-        target_positions = [0.5]
+    for i in range(1, len(adjusted)):
+        if adjusted[i][1] < adjusted[i-1][1] + min_gap:
+            adjusted[i][1] = adjusted[i-1][1] + min_gap
 
-    for (feat, real_y, meta), y_target in zip(label_positions, target_positions):
-        adjusted.append([feat, y_target, meta])
+    overflow = adjusted[-1][1] - y_hi
+    if overflow > 0:
+        for item in adjusted:
+            item[1] -= overflow
+
+    underflow = y_lo - adjusted[0][1]
+    if underflow > 0:
+        for item in adjusted:
+            item[1] += underflow
 
     label_x = x_positions[-1] + 0.55
     for (feat, real_y, meta), (_, y_adj, _) in zip(label_positions, adjusted):
@@ -132,7 +138,7 @@ def render(df: pd.DataFrame, theme: str = 'dark') -> go.Figure:
         xaxis=dict(tickvals=x_positions, ticktext=era_labels, showgrid=False,
                    zeroline=False, range=[-0.3, len(era_labels) - 1 + 2.2],
                    fixedrange=True, tickfont=dict(color=t['text'])),
-        yaxis=dict(title='Valeur normalisée (0 – 1)', range=[-0.05, 1.05],
+        yaxis=dict(title='Valeur moyenne', range=[-0.05, 1.1],
                    showgrid=True, gridcolor=t['grid'], zeroline=False,
                    fixedrange=True, tickfont=dict(color=t['text'])),
         legend=dict(orientation='h', x=0, y=1.08, xanchor='left', yanchor='bottom',
