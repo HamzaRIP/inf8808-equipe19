@@ -170,12 +170,6 @@ def render(df: pd.DataFrame, theme: str = 'dark') -> go.Figure:
         paper_bgcolor=t['bg'],
         font=dict(color=t['text'], family=FONT_MONO, size=11),
 
-        title=dict(
-            text='Profil audio : titres populaires vs impopulaires',
-            x=0.02, xanchor='left',
-            font=dict(size=13, color=t['text'], family=FONT_MONO),
-        ),
-
         xaxis=dict(
             title='Valeur normalisée (0 – 1)',
             range=[-0.05, 1.05],
@@ -198,14 +192,14 @@ def render(df: pd.DataFrame, theme: str = 'dark') -> go.Figure:
 
         legend=dict(
             orientation='h',
-            x=0.02, y=1.04,
-            xanchor='left', yanchor='bottom',
+            x=0.02, y=-0.12,
+            xanchor='left', yanchor='top',
             font=dict(size=10, family=FONT_MONO, color=t['text']),
             bgcolor='rgba(0,0,0,0)',
         ),
 
         annotations=annotations,
-        margin=dict(l=130, r=80, t=60, b=50),
+        margin=dict(l=130, r=80, t=20, b=60),
         dragmode=False,
         hovermode='closest',
         hoverlabel=dict(bgcolor=t['hover_bg'], font_size=11, font_family=FONT_MONO),

@@ -171,31 +171,6 @@ html, body {
 .viz-card:nth-child(4) { grid-column: 1 / 2; }
 .viz-card:nth-child(5) { grid-column: 2 / 4; }
 
-.viz-label {
-  font-family: var(--mono);
-  font-size: 10px;
-  text-transform: uppercase;
-  letter-spacing: 0.1em;
-  color: var(--muted);
-  padding: 10px 14px 6px;
-  border-bottom: 1px solid var(--border);
-  flex-shrink: 0;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.viz-questions {
-  color: var(--accent);
-  font-size: 9px;
-  font-family: var(--mono);
-}
-
-.viz-label-right {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
 
 /* ── viz-body : wrapper graphe + panneau texte ─── */
 .viz-body {
@@ -335,6 +310,17 @@ html, body {
 }
 .close-fullscreen-btn:hover { border-color: var(--accent); color: var(--accent); }
 
+/* ── viz-label : juste le bouton fullscreen ── */
+.viz-label {
+  padding: 6px 10px;
+  border-bottom: 1px solid var(--border);
+  flex-shrink: 0;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  min-height: 28px;
+}
+
 /* ── V3 inline controls ──────────────────── */
 .v3-controls {
   display: flex;
@@ -352,15 +338,47 @@ html, body {
   flex: 1;
   min-width: 100px;
 }
+
+/* ── Dropdown dark theme (Dash / react-select) ── */
 .v3-dropdown .Select-control,
-.v3-dropdown .Select-menu-outer {
+.v3-dropdown .Select--single > .Select-control,
+.v3-dropdown .Select.is-focused > .Select-control,
+.v3-dropdown .Select.is-open > .Select-control {
   background: var(--bg3) !important;
   border-color: var(--border2) !important;
   color: var(--text) !important;
   font-family: var(--mono) !important;
   font-size: 11px !important;
+  box-shadow: none !important;
 }
-.v3-dropdown .Select-value-label { color: var(--text) !important; }
-.v3-dropdown .Select-option { background: var(--bg3) !important; color: var(--text) !important; }
-.v3-dropdown .Select-option.is-focused { background: var(--bg2) !important; }
+.v3-dropdown .Select-value,
+.v3-dropdown .Select-value-label,
+.v3-dropdown .Select-placeholder {
+  color: var(--text) !important;
+  font-family: var(--mono) !important;
+  font-size: 11px !important;
+}
+.v3-dropdown .Select-input > input {
+  color: var(--text) !important;
+  font-family: var(--mono) !important;
+}
+.v3-dropdown .Select-menu-outer,
+.v3-dropdown .Select-menu {
+  background: var(--bg3) !important;
+  border-color: var(--border2) !important;
+}
+.v3-dropdown .Select-option {
+  background: var(--bg3) !important;
+  color: var(--text) !important;
+  font-family: var(--mono) !important;
+  font-size: 11px !important;
+}
+.v3-dropdown .Select-option.is-focused,
+.v3-dropdown .Select-option:hover {
+  background: var(--bg2) !important;
+  color: var(--accent) !important;
+}
+.v3-dropdown .Select-arrow { border-top-color: var(--muted) !important; }
+.v3-dropdown .Select.is-open .Select-arrow { border-bottom-color: var(--muted) !important; }
+
 .v3-slider { padding: 4px 0; }

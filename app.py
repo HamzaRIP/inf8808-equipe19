@@ -176,15 +176,11 @@ def genre_buttons():
     )
 
 
-def viz_card(card_id, graph_id, fullscreen_id, label, questions, description=None, extra=None):
+def viz_card(card_id, graph_id, fullscreen_id, description=None, extra=None):
     """Carte visualisation avec panneau texte latéral (visible en mode zoom)."""
     return html.Div(id=card_id, className='viz-card', children=[
         html.Div(className='viz-label', children=[
-            label,
-            html.Div(className='viz-label-right', children=[
-                html.Span(questions, className='viz-questions'),
-                html.Button('⛶', id=fullscreen_id, className='fullscreen-btn', n_clicks=0),
-            ]),
+            html.Button('⛶', id=fullscreen_id, className='fullscreen-btn', n_clicks=0),
         ]),
         *([extra] if extra else []),
         html.Div(className='viz-body', children=[
@@ -254,19 +250,14 @@ app.layout = html.Div(id='dashboard', className='dashboard', children=[
 
     html.Main(className='grid', children=[
         viz_card('card-v1', 'v1', 'fullscreen-v1',
-                 '01 — BAR CHART CORRÉLATIONS', 'Q1 · Q4 · Q5',
                  description=VIZ_DESCRIPTIONS['v1']),
         viz_card('card-v2', 'v2', 'fullscreen-v2',
-                 '02 — DUMBBELL CHART', 'Q2 · Q3',
                  description=VIZ_DESCRIPTIONS['v2']),
         viz_card('card-v3', 'v3', 'fullscreen-v3',
-                 '03 — BUBBLE CHART', 'Q5 · Q7 · Q8',
                  description=VIZ_DESCRIPTIONS['v3'], extra=v3_controls),
         viz_card('card-v4', 'v4', 'fullscreen-v4',
-                 '04 — CHORD DIAGRAM', 'Q6 · Q9 · Q10',
                  description=VIZ_DESCRIPTIONS['v4']),
         viz_card('card-v5', 'v5', 'fullscreen-v5',
-                 '05 — SLOPE CHART TEMPOREL', 'Q10–13',
                  description=VIZ_DESCRIPTIONS['v5']),
     ]),
 
