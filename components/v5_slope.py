@@ -84,7 +84,8 @@ def render(df: pd.DataFrame, theme: str = 'dark') -> go.Figure:
     for feat, meta in FEATURES.items():
         y_vals = era_df[feat].tolist()
         if all(pd.isna(v) for v in y_vals): continue
-        color = meta['color']; label = meta['label']
+        color = meta['color']
+        label = meta['label']
         hover_y = [f'{v:.3f}' if not pd.isna(v) else 'n/a' for v in y_vals]
         fig.add_trace(go.Scatter(
             x=x_positions, y=y_vals, mode='lines+markers', name=label,
@@ -102,7 +103,7 @@ def render(df: pd.DataFrame, theme: str = 'dark') -> go.Figure:
 
     n_labels = len(label_positions)
     y_lo, y_hi = 0.02, 0.98
-    min_gap = (y_hi - y_lo) / max(n_labels, 1)  # ~0.12 for 8 labels
+    min_gap = (y_hi - y_lo) / max(n_labels, 1)
 
     adjusted = [[feat, y, meta] for feat, y, meta in label_positions]
 
