@@ -339,46 +339,69 @@ html, body {
   min-width: 100px;
 }
 
-/* ── Dropdown dark theme (Dash / react-select) ── */
+/* ── Dropdown dark theme (Dash / react-select) — valeurs hex fixes ── */
 .v3-dropdown .Select-control,
 .v3-dropdown .Select--single > .Select-control,
 .v3-dropdown .Select.is-focused > .Select-control,
 .v3-dropdown .Select.is-open > .Select-control {
-  background: var(--bg3) !important;
-  border-color: var(--border2) !important;
-  color: var(--text) !important;
-  font-family: var(--mono) !important;
+  background: #1a1a24 !important;
+  background-color: #1a1a24 !important;
+  border: 1px solid rgba(255,255,255,0.15) !important;
+  color: #e8e8f0 !important;
+  font-family: 'Space Mono', monospace !important;
   font-size: 11px !important;
   box-shadow: none !important;
+  border-radius: 4px !important;
 }
 .v3-dropdown .Select-value,
 .v3-dropdown .Select-value-label,
 .v3-dropdown .Select-placeholder {
-  color: var(--text) !important;
-  font-family: var(--mono) !important;
+  color: #e8e8f0 !important;
+  font-family: 'Space Mono', monospace !important;
   font-size: 11px !important;
+  line-height: 32px !important;
 }
+.v3-dropdown .Select-input,
 .v3-dropdown .Select-input > input {
-  color: var(--text) !important;
-  font-family: var(--mono) !important;
+  color: #e8e8f0 !important;
+  font-family: 'Space Mono', monospace !important;
+  background: transparent !important;
 }
-.v3-dropdown .Select-menu-outer,
+.v3-dropdown .Select-menu-outer {
+  background: #1a1a24 !important;
+  background-color: #1a1a24 !important;
+  border: 1px solid rgba(255,255,255,0.15) !important;
+  border-top: none !important;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.5) !important;
+  z-index: 9999 !important;
+}
 .v3-dropdown .Select-menu {
-  background: var(--bg3) !important;
-  border-color: var(--border2) !important;
+  background: #1a1a24 !important;
+  background-color: #1a1a24 !important;
 }
 .v3-dropdown .Select-option {
-  background: var(--bg3) !important;
-  color: var(--text) !important;
-  font-family: var(--mono) !important;
+  background: #1a1a24 !important;
+  background-color: #1a1a24 !important;
+  color: #e8e8f0 !important;
+  font-family: 'Space Mono', monospace !important;
   font-size: 11px !important;
 }
 .v3-dropdown .Select-option.is-focused,
 .v3-dropdown .Select-option:hover {
-  background: var(--bg2) !important;
-  color: var(--accent) !important;
+  background: #111118 !important;
+  background-color: #111118 !important;
+  color: #1db954 !important;
 }
-.v3-dropdown .Select-arrow { border-top-color: var(--muted) !important; }
-.v3-dropdown .Select.is-open .Select-arrow { border-bottom-color: var(--muted) !important; }
+.v3-dropdown .Select-option.is-selected {
+  background: #1a1a24 !important;
+  color: #1db954 !important;
+}
+.v3-dropdown .Select-arrow-zone .Select-arrow {
+  border-top-color: #6b6b82 !important;
+}
+.v3-dropdown .Select.is-open .Select-arrow {
+  border-bottom-color: #6b6b82 !important;
+  border-top-color: transparent !important;
+}
 
 .v3-slider { padding: 4px 0; }
