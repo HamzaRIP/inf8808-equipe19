@@ -157,9 +157,9 @@ def render(df: pd.DataFrame, theme: str = 'dark') -> go.Figure:
         sign = '+' if diff >= 0 else ''
         color_diff = POP_CLR if diff > 0.005 else (UNPOP_CLR if diff < -0.005 else t['muted'])
         annotations.append(dict(
-            x=1.01, y=i,
+            x=1.02, y=i,
             xref='paper', yref='y',
-            text=f'<span style="font-size:10px">{sign}{diff:.2f}</span>',
+            text=f'{sign}{diff:.2f}',
             showarrow=False,
             font=dict(color=color_diff, family=FONT_MONO, size=10),
             xanchor='left', yanchor='middle',
@@ -205,7 +205,7 @@ def render(df: pd.DataFrame, theme: str = 'dark') -> go.Figure:
         ),
 
         annotations=annotations,
-        margin=dict(l=130, r=70, t=60, b=50),
+        margin=dict(l=130, r=80, t=60, b=50),
         dragmode=False,
         hovermode='closest',
         hoverlabel=dict(bgcolor=t['hover_bg'], font_size=11, font_family=FONT_MONO),

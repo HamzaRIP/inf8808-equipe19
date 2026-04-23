@@ -32,8 +32,8 @@ COLORS_GENRE = {
 }
 FALLBACK_GENRE_COLOR = '#6d6d78'
 
-_PACK_ITERS = 200
-_SCALE_BISECT_STEPS = 10
+_PACK_ITERS = 80
+_SCALE_BISECT_STEPS = 6
 _SCALE_LO, _SCALE_HI = 4.0, 82.0
 _DIAM_VISUAL_SCALE = 0.48
 _MARKER_DIAM_MIN, _MARKER_DIAM_MAX = 4.0, 44.0
@@ -95,25 +95,36 @@ def _empty_fig(msg: str = 'Données insuffisantes', t=None) -> go.Figure:
 
 def _pack_bubbles_v2(x, y, radii, bounds_px, iterations=_PACK_ITERS,
                      attraction=0.004, padding=0.0):
+    """Circle packing vectorisé (numpy broadcasting) — O(n²) mais sans boucle Python."""
     cx = x.astype(float).copy(); cy = y.astype(float).copy()
     ox = x.astype(float).copy(); oy = y.astype(float).copy()
-    n = len(cx); xlo, xhi, ylo, yhi = bounds_px
+    xlo, xhi, ylo, yhi = bounds_px
+    idx = np.arange(len(cx))
+
     for it in range(iterations):
         att = attraction * (0.5 + 1.5 * it / max(iterations, 1))
-        for i in range(n):
-            for j in range(i + 1, n):
-                dx = cx[i] - cx[j]; dy = cy[i] - cy[j]
-                dist = float(np.sqrt(dx*dx + dy*dy)) + 1e-6
-                min_dist = radii[i] + radii[j] + padding
-                if dist < min_dist:
-                    overlap = (min_dist - dist) / 2
-                    ux, uy = dx / dist, dy / dist
-                    cx[i] += overlap * ux; cx[j] -= overlap * ux
-                    cy[i] += overlap * uy; cy[j] -= overlap * uy
-        for i in range(n):
-            cx[i] = np.clip(cx[i], xlo + radii[i], xhi - radii[i])
-            cy[i] = np.clip(cy[i], ylo + radii[i], yhi - radii[i])
-        cx += (ox - cx) * att; cy += (oy - cy) * att
+
+        # Matrices de différences (n×n)
+        dx = cx[:, None] - cx[None, :]          # cx[i] - cx[j]
+        dy = cy[:, None] - cy[None, :]
+        dist = np.sqrt(dx**2 + dy**2) + 1e-6
+        min_d = radii[:, None] + radii[None, :] + padding
+
+        # Masque paires i < j qui se chevauchent
+        mask = (dist < min_d) & (idx[:, None] < idx[None, :])
+        overlap = np.where(mask, (min_d - dist) / 2.0, 0.0)
+        ux = np.where(mask, dx / dist, 0.0)
+        uy = np.where(mask, dy / dist, 0.0)
+
+        # Force nette sur chaque bulle
+        cx += (overlap * ux).sum(axis=1) - (overlap * ux).sum(axis=0)
+        cy += (overlap * uy).sum(axis=1) - (overlap * uy).sum(axis=0)
+
+        cx = np.clip(cx, xlo + radii, xhi - radii)
+        cy = np.clip(cy, ylo + radii, yhi - radii)
+        cx += (ox - cx) * att
+        cy += (oy - cy) * att
+
     return cx, cy
 
 
@@ -121,21 +132,20 @@ def _find_max_scale(x_px, y_px, rel_radii, bounds_px, iterations=_PACK_ITERS,
                     attraction=0.004, tol=50.0):
     lo, hi = _SCALE_LO, _SCALE_HI
     best_scale = lo; best_cx, best_cy = x_px.copy(), y_px.copy()
+    xlo, xhi, ylo, yhi = bounds_px
     for _ in range(_SCALE_BISECT_STEPS):
         mid = (lo + hi) / 2; radii = rel_radii * mid
         cx, cy = _pack_bubbles_v2(x_px, y_px, radii, bounds_px,
                                    iterations=iterations, attraction=attraction)
-        xlo, xhi, ylo, yhi = bounds_px
-        in_bounds = all(
-            cx[i]-radii[i] >= xlo-tol and cx[i]+radii[i] <= xhi+tol and
-            cy[i]-radii[i] >= ylo-tol and cy[i]+radii[i] <= yhi+tol
-            for i in range(len(cx)))
-        max_overlap = 0.0
-        for i in range(len(cx)):
-            for j in range(i+1, len(cx)):
-                dist = float(np.sqrt((cx[i]-cx[j])**2 + (cy[i]-cy[j])**2))
-                overlap = radii[i] + radii[j] - dist
-                if overlap > max_overlap: max_overlap = overlap
+        in_bounds = bool(
+            np.all(cx - radii >= xlo - tol) and np.all(cx + radii <= xhi + tol) and
+            np.all(cy - radii >= ylo - tol) and np.all(cy + radii <= yhi + tol))
+        # Overlap maximal (vectorisé)
+        dx = cx[:, None] - cx[None, :]; dy = cy[:, None] - cy[None, :]
+        dist_mat = np.sqrt(dx**2 + dy**2)
+        overlap_mat = radii[:, None] + radii[None, :] - dist_mat
+        np.fill_diagonal(overlap_mat, 0)
+        max_overlap = float(overlap_mat.max())
         if in_bounds and max_overlap < 3:
             best_scale = mid; best_cx, best_cy = cx.copy(), cy.copy(); lo = mid
         else:
@@ -253,7 +263,7 @@ def render(df: pd.DataFrame, x_key: str, y_key: str,
     fig.update_layout(
         paper_bgcolor=t['bg'], plot_bgcolor=t['bg'],
         font=dict(color=t['text'], family=FONT_MONO),
-        title=dict(text='Q5, Q7, Q8 — Popularité et signature audio par sous-genre',
+        title=dict(text='Popularité et signature audio par sous-genre',
                    font=dict(size=11, color=t['text']), x=0.5, xanchor='center'),
         margin=dict(l=44, r=8, t=40, b=56),
         showlegend=True,

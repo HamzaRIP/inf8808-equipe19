@@ -105,17 +105,15 @@ def render(df: pd.DataFrame, theme: str = 'dark') -> go.Figure:
     y_lo, y_hi = 0.02, 0.98
     min_gap = (y_hi - y_lo) / max(n_labels, 1)
 
+    # Ajustement vertical des labels pour éviter les chevauchements
     adjusted = [[feat, y, meta] for feat, y, meta in label_positions]
-
     for i in range(1, len(adjusted)):
         if adjusted[i][1] < adjusted[i-1][1] + min_gap:
             adjusted[i][1] = adjusted[i-1][1] + min_gap
-
     overflow = adjusted[-1][1] - y_hi
     if overflow > 0:
         for item in adjusted:
             item[1] -= overflow
-
     underflow = y_lo - adjusted[0][1]
     if underflow > 0:
         for item in adjusted:
@@ -127,8 +125,8 @@ def render(df: pd.DataFrame, theme: str = 'dark') -> go.Figure:
                       y0=real_y, y1=y_adj,
                       line=dict(color=t['connector'], width=1))
         fig.add_annotation(x=label_x, y=y_adj, text=meta['label'],
-                           showarrow=False, font=dict(color=meta['color'], size=12, family=FONT_MONO),
-                           xanchor='left')
+                           showarrow=False, font=dict(color=meta['color'], size=11, family=FONT_MONO),
+                           xanchor='left', yanchor='middle')
 
     for xi in x_positions:
         fig.add_vline(x=xi, line_color=t['grid'], line_width=1)
@@ -138,7 +136,7 @@ def render(df: pd.DataFrame, theme: str = 'dark') -> go.Figure:
         font=dict(color=t['text'], family=FONT_MONO, size=12),
         xaxis=dict(tickvals=x_positions, ticktext=era_labels, showgrid=False,
                    zeroline=False, range=[-0.3, len(era_labels) - 1 + 2.2],
-                   fixedrange=True, tickfont=dict(color=t['text'])),
+                   fixedrange=True, tickfont=dict(color=t['text'], size=11)),
         yaxis=dict(title='Valeur moyenne', range=[-0.05, 1.1],
                    showgrid=True, gridcolor=t['grid'], zeroline=False,
                    fixedrange=True, tickfont=dict(color=t['text'])),

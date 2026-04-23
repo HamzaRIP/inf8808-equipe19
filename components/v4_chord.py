@@ -108,17 +108,17 @@ def render(df, theme: str = 'dark'):
         rx = np.concatenate([ax1, bx1, ax2, bx2, [ax1[0]]])
         ry = np.concatenate([ay1, by1, ay2, by2, [ay1[0]]])
 
-        # Polygone visuel — sans hover (hoverinfo='skip')
+        # Polygone visuel — sans hover direct sur le fill
         traces.append(go.Scatter(
-            x=rx, y=ry, mode='lines', fill='toself',
+            x=rx, y=ry, mode='lines', fill='toself', name='',
             fillcolor=rgba(color, 0.22), line=dict(color=rgba(color, 0.5), width=0.8),
             hoverinfo='skip',
             showlegend=False))
 
         # Point fantôme au centre du ruban — porte le tooltip
-        cx = float(np.mean(rx)); cy = float(np.mean(ry))
+        cx_r = float(np.mean(rx)); cy_r = float(np.mean(ry))
         traces.append(go.Scatter(
-            x=[cx], y=[cy],
+            x=[cx_r], y=[cy_r],
             mode='markers',
             marker=dict(size=18, color='rgba(0,0,0,0)', line=dict(width=0)),
             customdata=[[g1.upper(), g2.upper(), val, pct1, pct2]],
@@ -140,9 +140,9 @@ def render(df, theme: str = 'dark'):
         px = np.concatenate([ax, axi, [ax[0]]]); py = np.concatenate([ay, ayi, [ay[0]]])
         pct = genre_totals[g] / total_tracks * 100
 
-        # Polygone visuel — sans hover
+        # Polygone visuel — sans hover direct sur le fill
         traces.append(go.Scatter(
-            x=px, y=py, mode='lines', fill='toself',
+            x=px, y=py, mode='lines', fill='toself', name=g.upper(),
             fillcolor=rgba(color, 0.85), line=dict(color=color, width=1.5),
             hoverinfo='skip',
             showlegend=False))
