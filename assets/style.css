@@ -339,69 +339,112 @@ html, body {
   min-width: 100px;
 }
 
-/* ── Dropdown dark theme (Dash / react-select) — valeurs hex fixes ── */
-.v3-dropdown .Select-control,
-.v3-dropdown .Select--single > .Select-control,
-.v3-dropdown .Select.is-focused > .Select-control,
-.v3-dropdown .Select.is-open > .Select-control {
+/* ── Select natif (remplace dcc.Dropdown) ── */
+.v3-select {
+  background: #1a1a24;
+  background-color: #1a1a24;
+  color: #e8e8f0;
+  border: 1px solid rgba(255,255,255,0.18);
+  font-family: 'Space Mono', monospace;
+  font-size: 11px;
+  padding: 5px 8px;
+  border-radius: 4px;
+  cursor: pointer;
+  width: 100%;
+  outline: none;
+  appearance: none;
+  -webkit-appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%236b6b82'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 8px center;
+  padding-right: 24px;
+}
+.v3-select:hover  { border-color: #1db954; }
+.v3-select:focus  { border-color: #1db954; outline: none; }
+.v3-select option { background: #1a1a24; color: #e8e8f0; }
+
+/* ── Dropdown dark theme — wildcard compatible Dash 2/4 + react-select v1/v2/v5 ── */
+
+/* Contrôle principal (barre avec la valeur sélectionnée) */
+.v3-controls [class*="control"],
+.v3-controls [class*="Control"],
+.v3-controls .Select-control {
   background: #1a1a24 !important;
   background-color: #1a1a24 !important;
-  border: 1px solid rgba(255,255,255,0.15) !important;
-  color: #e8e8f0 !important;
-  font-family: 'Space Mono', monospace !important;
-  font-size: 11px !important;
+  border: 1px solid rgba(255,255,255,0.18) !important;
   box-shadow: none !important;
-  border-radius: 4px !important;
+  min-height: 32px !important;
+  cursor: pointer !important;
 }
-.v3-dropdown .Select-value,
-.v3-dropdown .Select-value-label,
-.v3-dropdown .Select-placeholder {
+.v3-controls [class*="control"]:hover,
+.v3-controls [class*="Control"]:hover,
+.v3-controls .Select-control:hover {
+  border-color: #1db954 !important;
+}
+
+/* Valeur sélectionnée & placeholder */
+.v3-controls [class*="singleValue"],
+.v3-controls [class*="single-value"],
+.v3-controls .Select-value-label,
+.v3-controls [class*="placeholder"],
+.v3-controls .Select-placeholder {
   color: #e8e8f0 !important;
   font-family: 'Space Mono', monospace !important;
   font-size: 11px !important;
-  line-height: 32px !important;
 }
-.v3-dropdown .Select-input,
-.v3-dropdown .Select-input > input {
+.v3-controls [class*="placeholder"],
+.v3-controls .Select-placeholder {
+  color: #6b6b82 !important;
+}
+
+/* Input de recherche */
+.v3-controls input {
   color: #e8e8f0 !important;
-  font-family: 'Space Mono', monospace !important;
   background: transparent !important;
+  font-family: 'Space Mono', monospace !important;
 }
-.v3-dropdown .Select-menu-outer {
+
+/* Menu déroulant */
+.v3-controls [class*="menu"],
+.v3-controls [class*="Menu"],
+.v3-controls .Select-menu-outer,
+.v3-controls .Select-menu {
   background: #1a1a24 !important;
   background-color: #1a1a24 !important;
-  border: 1px solid rgba(255,255,255,0.15) !important;
-  border-top: none !important;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.5) !important;
+  border: 1px solid rgba(255,255,255,0.18) !important;
+  box-shadow: 0 6px 16px rgba(0,0,0,0.6) !important;
   z-index: 9999 !important;
 }
-.v3-dropdown .Select-menu {
-  background: #1a1a24 !important;
-  background-color: #1a1a24 !important;
-}
-.v3-dropdown .Select-option {
+
+/* Options */
+.v3-controls [class*="option"],
+.v3-controls [class*="Option"],
+.v3-controls .Select-option {
   background: #1a1a24 !important;
   background-color: #1a1a24 !important;
   color: #e8e8f0 !important;
   font-family: 'Space Mono', monospace !important;
   font-size: 11px !important;
+  cursor: pointer !important;
 }
-.v3-dropdown .Select-option.is-focused,
-.v3-dropdown .Select-option:hover {
+.v3-controls [class*="option"]:hover,
+.v3-controls [class*="Option"]:hover,
+.v3-controls .Select-option.is-focused,
+.v3-controls .Select-option:hover {
   background: #111118 !important;
   background-color: #111118 !important;
   color: #1db954 !important;
 }
-.v3-dropdown .Select-option.is-selected {
-  background: #1a1a24 !important;
-  color: #1db954 !important;
+
+/* Flèche indicateur */
+.v3-controls [class*="indicator"],
+.v3-controls [class*="Indicator"],
+.v3-controls .Select-arrow {
+  color: #6b6b82 !important;
 }
-.v3-dropdown .Select-arrow-zone .Select-arrow {
-  border-top-color: #6b6b82 !important;
-}
-.v3-dropdown .Select.is-open .Select-arrow {
-  border-bottom-color: #6b6b82 !important;
-  border-top-color: transparent !important;
+.v3-controls [class*="indicatorSeparator"],
+.v3-controls .Select-arrow-zone {
+  display: none !important;
 }
 
 .v3-slider { padding: 4px 0; }
