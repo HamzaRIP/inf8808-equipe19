@@ -339,31 +339,7 @@ html, body {
   min-width: 100px;
 }
 
-/* ── Select natif (remplace dcc.Dropdown) ── */
-.v3-select {
-  background: #1a1a24;
-  background-color: #1a1a24;
-  color: #e8e8f0;
-  border: 1px solid rgba(255,255,255,0.18);
-  font-family: 'Space Mono', monospace;
-  font-size: 11px;
-  padding: 5px 8px;
-  border-radius: 4px;
-  cursor: pointer;
-  width: 100%;
-  outline: none;
-  appearance: none;
-  -webkit-appearance: none;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%236b6b82'/%3E%3C/svg%3E");
-  background-repeat: no-repeat;
-  background-position: right 8px center;
-  padding-right: 24px;
-}
-.v3-select:hover  { border-color: #1db954; }
-.v3-select:focus  { border-color: #1db954; outline: none; }
-.v3-select option { background: #1a1a24; color: #e8e8f0; }
-
-/* ── Dropdown dark theme — wildcard compatible Dash 2/4 + react-select v1/v2/v5 ── */
+/* ── Dropdown dark theme — classes Dash 4.x confirmées ── */
 
 /* Contrôle principal (barre avec la valeur sélectionnée) */
 .v3-controls [class*="control"],

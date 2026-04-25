@@ -193,31 +193,21 @@ def viz_card(card_id, graph_id, fullscreen_id, description=None, extra=None):
     ])
 
 
-def _select(select_id, options, default):
-    """html.Select stylé thème dark (remplace dcc.Dropdown)."""
-    return html.Select(
-        id=select_id,
-        value=default,
-        className='v3-select',
-        children=[
-            html.Option(opt['label'], value=opt['value'],
-                        selected=(opt['value'] == default))
-            for opt in options
-        ],
-    )
-
 v3_controls = html.Div(className='v3-controls', children=[
     html.Div([
         html.Label('Axe X', className='control-label'),
-        _select('v3-x', V3_X_OPTIONS, 'acousticness_sqrt'),
+        dcc.Dropdown(id='v3-x', options=V3_X_OPTIONS,
+                     value='acousticness_sqrt', clearable=False, className='v3-dropdown'),
     ]),
     html.Div([
         html.Label('Axe Y', className='control-label'),
-        _select('v3-y', V3_Y_OPTIONS, 'track_popularity'),
+        dcc.Dropdown(id='v3-y', options=V3_Y_OPTIONS,
+                     value='track_popularity', clearable=False, className='v3-dropdown'),
     ]),
     html.Div([
         html.Label('Taille', className='control-label'),
-        _select('v3-size', V3_SIZE_OPTIONS, 'valence'),
+        dcc.Dropdown(id='v3-size', options=V3_SIZE_OPTIONS,
+                     value='valence', clearable=False, className='v3-dropdown'),
     ]),
     html.Div([
         html.Label('Top N', className='control-label'),
@@ -228,55 +218,48 @@ v3_controls = html.Div(className='v3-controls', children=[
 ])
 
 _DROPDOWN_CSS = """
-.v3-controls [class*="control"],
-.v3-controls [class*="Control"],
-.v3-controls .Select-control {
-  background: #1a1a24 !important; background-color: #1a1a24 !important;
-  border: 1px solid rgba(255,255,255,0.18) !important; box-shadow: none !important;
-  min-height: 32px !important; cursor: pointer !important;
-}
-.v3-controls [class*="control"]:hover,
-.v3-controls [class*="Control"]:hover { border-color: #1db954 !important; }
-
-.v3-controls [class*="singleValue"], .v3-controls [class*="single-value"],
-.v3-controls .Select-value-label {
-  color: #e8e8f0 !important; font-family: 'Space Mono',monospace !important; font-size:11px !important;
-}
-.v3-controls [class*="placeholder"], .v3-controls .Select-placeholder {
-  color: #6b6b82 !important; font-family: 'Space Mono',monospace !important; font-size:11px !important;
-}
-.v3-controls [class*="ValueContainer"], .v3-controls [class*="value-container"],
-.v3-controls .Select-multi-value-wrapper {
-  background: #1a1a24 !important; background-color: #1a1a24 !important;
-}
-.v3-controls input {
-  color: #e8e8f0 !important; background: transparent !important;
-  font-family: 'Space Mono',monospace !important;
-}
-.v3-controls [class*="menu"], .v3-controls [class*="Menu"],
-.v3-controls .Select-menu-outer, .v3-controls .Select-menu {
+/* Dash 4.x — classes confirmées depuis async-dropdown.js */
+.v3-dropdown .dash-dropdown-content {
   background: #1a1a24 !important; background-color: #1a1a24 !important;
   border: 1px solid rgba(255,255,255,0.18) !important;
-  box-shadow: 0 6px 16px rgba(0,0,0,0.6) !important; z-index: 9999 !important;
+  border-radius: 4px !important; color: #e8e8f0 !important;
+  font-family: 'Space Mono',monospace !important; font-size: 11px !important;
+  cursor: pointer !important;
 }
-.v3-controls [class*="MenuList"], .v3-controls [class*="menu-list"] {
-  background: #1a1a24 !important; background-color: #1a1a24 !important;
+.v3-dropdown .dash-dropdown-content:hover {
+  border-color: #1db954 !important;
 }
-.v3-controls [class*="option"], .v3-controls [class*="Option"],
-.v3-controls .Select-option {
-  background: #1a1a24 !important; background-color: #1a1a24 !important;
-  color: #e8e8f0 !important; font-family: 'Space Mono',monospace !important;
-  font-size:11px !important; cursor: pointer !important;
+.v3-dropdown .dash-dropdown-value,
+.v3-dropdown .dash-dropdown-value-item {
+  color: #e8e8f0 !important;
+  font-family: 'Space Mono',monospace !important; font-size: 11px !important;
+  background: transparent !important;
 }
-.v3-controls [class*="option"]:hover, .v3-controls .Select-option.is-focused {
-  background: #111118 !important; background-color: #111118 !important; color: #1db954 !important;
-}
-.v3-controls [class*="IndicatorSeparator"], .v3-controls [class*="indicator-separator"] {
-  display: none !important;
-}
-.v3-controls [class*="indicator"] svg, .v3-controls [class*="Indicator"] svg {
+.v3-dropdown .dash-dropdown-trigger-icon svg,
+.v3-dropdown .dash-dropdown-trigger-icon {
   color: #6b6b82 !important; fill: #6b6b82 !important;
 }
+.v3-dropdown .dash-dropdown-options {
+  background: #1a1a24 !important; background-color: #1a1a24 !important;
+  border: 1px solid rgba(255,255,255,0.18) !important;
+  box-shadow: 0 6px 16px rgba(0,0,0,0.6) !important;
+  z-index: 9999 !important;
+}
+.v3-dropdown .dash-dropdown-option {
+  background: #1a1a24 !important; background-color: #1a1a24 !important;
+  color: #e8e8f0 !important;
+  font-family: 'Space Mono',monospace !important; font-size: 11px !important;
+  cursor: pointer !important;
+}
+.v3-dropdown .dash-dropdown-option:hover {
+  background: #111118 !important; background-color: #111118 !important;
+  color: #1db954 !important;
+}
+.v3-dropdown .dash-dropdown-search input {
+  background: #1a1a24 !important; color: #e8e8f0 !important;
+  font-family: 'Space Mono',monospace !important;
+}
+.v3-dropdown .dash-dropdown-clear { color: #6b6b82 !important; }
 """
 
 app.index_string = f'''<!DOCTYPE html>
